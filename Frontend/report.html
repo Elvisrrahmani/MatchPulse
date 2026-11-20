@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f8fa">
+    <meta name="color-scheme" content="light">
+    <meta name="description" content="Your MatchPulse resume compatibility report.">
+    <title>Match Report — MatchPulse</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="report.js" defer></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <header class="navbar">
+            <a href="index.html" class="brand" aria-label="MatchPulse home">
+                <span class="brand-icon">M</span>
+                <span>MatchPulse</span>
+            </a>
+
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                Compatibility report
+            </div>
+        </header>
+
+        <main class="report-main">
+            <section id="report" class="results" aria-live="polite">
+                <div class="section-heading">
+                    <div>
+                        <span class="step-label">STEP 02</span>
+                        <h2>Your match report</h2>
+                    </div>
+                    <span class="report-tag">ANALYSIS COMPLETE</span>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-information">
+                        <span class="result-label">OVERALL COMPATIBILITY</span>
+                        <h3 id="scoreTitle">Your match score</h3>
+                        <p id="scoreDescription"></p>
+                    </div>
+
+                    <div class="score-gauge" id="scoreGauge" role="img" aria-label="Match score">
+                        <div class="score-inner">
+                            <strong id="matchScore">0%</strong>
+                            <span>Match score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="keyword-grid">
+                    <article class="keyword-card">
+                        <div class="result-card-heading">
+                            <h3>Matched keywords</h3>
+                            <span id="matchedCount">0</span>
+                        </div>
+                        <p>Skills and terms found in your resume.</p>
+                        <div id="matchedKeywords" class="keyword-list"></div>
+                    </article>
+
+                    <article class="keyword-card">
+                        <div class="result-card-heading">
+                            <h3>Missing keywords</h3>
+                            <span id="missingCount">0</span>
+                        </div>
+                        <p>Relevant terms not identified in your resume.</p>
+                        <div id="missingKeywords" class="keyword-list"></div>
+                    </article>
+                </div>
+
+                <article class="recommendations-card">
+                    <div class="result-card-heading">
+                        <h3>Improvement recommendations</h3>
+                        <span class="recommendation-icon">✦</span>
+                    </div>
+                    <p>Actionable suggestions to strengthen your application.</p>
+                    <ul id="recommendations"></ul>
+                </article>
+
+                <div class="results-actions">
+                    <a href="index.html" class="secondary-button">Start new analysis</a>
+                </div>
+            </section>
+
+            <section id="emptyReport" class="empty-report hidden" aria-live="polite">
+                <span class="step-label">NO REPORT FOUND</span>
+                <h1>Run an analysis first</h1>
+                <p>Your compatibility report will appear here after you analyze a resume.</p>
+                <a href="index.html" class="analyze-button">Back to MatchPulse</a>
+            </section>
+        </main>
+
+        <footer>
+            <span>© 2026 MatchPulse</span>
+            <span>Built for smarter career decisions.</span>
+        </footer>
+    </div>
+</body>
+</html>
