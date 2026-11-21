@@ -1,6 +1,5 @@
 import os
 import re
-from collections import Counter
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +8,7 @@ from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="MatchPulse API",
-    description="Resume and job-description compatibility analysis.",
+    description="Keyword-based resume and job-description comparison.",
     version="1.0.0",
 )
 
@@ -17,7 +16,11 @@ cors_origins = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:4173,http://127.0.0.1:4173",
+        ",".join(
+            f"http://{host}:{port}"
+            for host in ("localhost", "127.0.0.1")
+            for port in (4173, 5173, 5500, 5501)
+        ),
     ).split(",")
     if origin.strip()
 ]
@@ -48,8 +51,8 @@ SKILL_TERMS = {
     "api": "api",
     "apis": "api",
     "rest": "rest",
-    "rest api": "rest api",
-    "rest apis": "rest api",
+    "rest api": "api",
+    "rest apis": "api",
     "graphql": "graphql",
     "javascript": "javascript",
     "typescript": "typescript",
@@ -93,6 +96,24 @@ SKILL_TERMS = {
     "selenium": "selenium",
     "figma": "figma",
     "responsive design": "responsive design",
+    "accessibility": "accessibility",
+    "wireframing": "wireframing",
+    "wireframe": "wireframing",
+    "prototyping": "prototyping",
+    "prototype": "prototyping",
+    "usability testing": "usability testing",
+    "design systems": "design systems",
+    "design system": "design systems",
+    "user research": "user research",
+    "product strategy": "product strategy",
+    "roadmaps": "roadmap",
+    "roadmap": "roadmap",
+    "prioritization": "prioritization",
+    "analytics": "analytics",
+    "statistics": "statistics",
+    "data visualization": "data visualization",
+    "data cleaning": "data cleaning",
+    "pytest": "pytest",
     "ux": "ux",
     "ui": "ui",
     "communication": "communication",
@@ -118,16 +139,6 @@ SKILL_TERMS = {
     "devops": "devops",
 }
 
-STOP_WORDS = {
-    "about", "after", "and", "are", "for", "from", "have", "into", "looking",
-    "must", "requirements", "responsibilities", "role", "that", "their",
-    "this", "will", "with", "work", "working", "years", "your", "team",
-    "experience", "knowledge", "strong", "skilled", "skills", "including",
-    "frontend", "backend", "developer", "development", "join", "modern",
-    "building", "build", "maintain", "application", "applications", "website",
-    "collaborate", "responsive", "design",
-}
-
 
 def normalize_text(text: str) -> str:
     text = text.lower()
@@ -138,17 +149,16 @@ def normalize_text(text: str) -> str:
 def extract_terms(text: str) -> list[str]:
     normalized = normalize_text(text)
     found: set[str] = set()
+    matched_spans: list[tuple[int, int]] = []
 
     for phrase in sorted(SKILL_TERMS, key=len, reverse=True):
         pattern = r"(?<!\w)" + re.escape(normalize_text(phrase)) + r"(?!\w)"
-        if re.search(pattern, normalized):
+        for match in re.finditer(pattern, normalized):
+            span = match.span()
+            if any(span[0] < end and start < span[1] for start, end in matched_spans):
+                continue
+            matched_spans.append(span)
             found.add(SKILL_TERMS[phrase])
-
-    words = re.findall(r"\b[a-z][a-z0-9+#-]{3,}\b", normalized)
-    repeated = Counter(word for word in words if word not in STOP_WORDS)
-    for word, count in repeated.most_common(12):
-        if count >= 1:
-            found.add(word)
 
     return sorted(found, key=str.lower)
 
@@ -163,7 +173,7 @@ def create_recommendations(
     if missing:
         displayed = ", ".join(missing[:5])
         recommendations.append(
-            f"Address these missing requirements when they are genuinely part of your experience: {displayed}."
+            f"Consider addressing these missing terms if they genuinely reflect your experience: {displayed}."
         )
 
     if re.search(r"\b\d+\+?\s*(years?|yrs)\b", cv_text, re.I) is None:
@@ -201,7 +211,7 @@ def analyze(request: AnalysisRequest) -> AnalysisResponse:
     if not job_terms:
         raise HTTPException(
             status_code=422,
-            detail="Could not identify relevant keywords in the job description.",
+            detail="Could not identify recognized skills or terms in the job description.",
         )
 
     resume_terms = set(extract_terms(request.cv_text))

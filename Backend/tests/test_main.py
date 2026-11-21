@@ -13,6 +13,19 @@ def test_health_endpoint():
     assert response.json() == {"status": "ok"}
 
 
+def test_local_frontend_origin_is_allowed_by_cors():
+    response = client.options(
+        "/analyze",
+        headers={
+            "Origin": "http://localhost:5500",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:5500"
+
+
 def test_analyze_returns_expected_shape():
     response = client.post(
         "/analyze",
@@ -63,3 +76,38 @@ def test_generic_keywords_do_not_include_trailing_punctuation():
     assert response.status_code == 200
     data = response.json()
     assert all("." not in keyword for keyword in data["missing_keywords"])
+
+
+def test_score_only_counts_recognized_terms_and_deduplicates_aliases():
+    response = client.post(
+        "/analyze",
+        json={
+            "cv_text": (
+                "I built reliable software for teams and projects. "
+                "My experience includes REST APIs and Python."
+            ),
+            "job_description": (
+                "We are looking for a reliable developer to build software for "
+                "teams and projects. Requirements include REST APIs, API "
+                "development, and Python."
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["matched_keywords"] == ["api", "python"]
+    assert data["missing_keywords"] == []
+    assert data["match_score"] == 100
+
+
+def test_job_description_without_recognized_terms_is_rejected():
+    response = client.post(
+        "/analyze",
+        json={
+            "cv_text": "Experienced project leader delivering successful outcomes.",
+            "job_description": "We need a motivated person for an exciting role.",
+        },
+    )
+
+    assert response.status_code == 422

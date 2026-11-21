@@ -26,7 +26,7 @@
 
             <div class="nav-status">
                 <span class="status-dot"></span>
-                Compatibility report
+                Keyword report
             </div>
         </header>
 
@@ -37,14 +37,18 @@
                         <span class="step-label">STEP 02</span>
                         <h2>Your match report</h2>
                     </div>
-                    <span class="report-tag">ANALYSIS COMPLETE</span>
+                    <span class="report-tag">KEYWORD ANALYSIS</span>
                 </div>
 
                 <div class="score-card">
                     <div class="score-information">
-                        <span class="result-label">OVERALL COMPATIBILITY</span>
+                        <span class="result-label">RECOGNIZED TERM OVERLAP</span>
                         <h3 id="scoreTitle">Your match score</h3>
                         <p id="scoreDescription"></p>
+                        <p class="score-method">
+                            Score = matched recognized terms ÷ recognized terms in the job description.
+                            This is a keyword comparison, not a hiring prediction.
+                        </p>
                     </div>
 
                     <div class="score-gauge" id="scoreGauge" role="img" aria-label="Match score">
@@ -61,7 +65,7 @@
                             <h3>Matched keywords</h3>
                             <span id="matchedCount">0</span>
                         </div>
-                        <p>Skills and terms found in your resume.</p>
+                        <p>Recognized skills and terms found in your resume.</p>
                         <div id="matchedKeywords" class="keyword-list"></div>
                     </article>
 
@@ -70,7 +74,7 @@
                             <h3>Missing keywords</h3>
                             <span id="missingCount">0</span>
                         </div>
-                        <p>Relevant terms not identified in your resume.</p>
+                        <p>Recognized job-description terms not found in your resume.</p>
                         <div id="missingKeywords" class="keyword-list"></div>
                     </article>
                 </div>
@@ -80,11 +84,14 @@
                         <h3>Improvement recommendations</h3>
                         <span class="recommendation-icon">✦</span>
                     </div>
-                    <p>Actionable suggestions to strengthen your application.</p>
+                    <p>Suggestions to consider; only include experience that is true for you.</p>
                     <ul id="recommendations"></ul>
                 </article>
 
                 <div class="results-actions">
+                    <button type="button" class="secondary-button print-button" id="printReport">
+                        Print / save as PDF
+                    </button>
                     <a href="index.html" class="secondary-button">Start new analysis</a>
                 </div>
             </section>
@@ -92,7 +99,7 @@
             <section id="emptyReport" class="empty-report hidden" aria-live="polite">
                 <span class="step-label">NO REPORT FOUND</span>
                 <h1>Run an analysis first</h1>
-                <p>Your compatibility report will appear here after you analyze a resume.</p>
+                <p>Your keyword comparison will appear here after you analyze a resume.</p>
                 <a href="index.html" class="analyze-button">Back to MatchPulse</a>
             </section>
         </main>

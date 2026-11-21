@@ -257,7 +257,7 @@ function setLoading(isLoading) {
 
     buttonText.textContent = isLoading
         ? "Analyzing your resume..."
-        : "Analyze compatibility";
+        : "Analyze resume match";
 
     buttonIcon.classList.toggle("hidden", isLoading);
     spinner.classList.toggle("hidden", !isLoading);

@@ -5,28 +5,28 @@ const emptyReport = document.getElementById("emptyReport");
 function getScoreDescription(score) {
     if (score >= 85) {
         return {
-            title: "Excellent compatibility",
-            description: "Your resume aligns strongly with this job description."
+            title: "High keyword overlap",
+            description: "Most recognized terms from the job description also appear in your resume."
         };
     }
 
     if (score >= 70) {
         return {
-            title: "Strong compatibility",
-            description: "Your resume matches many of the role's requirements."
+            title: "Strong keyword overlap",
+            description: "Many recognized job-description terms also appear in your resume."
         };
     }
 
     if (score >= 50) {
         return {
-            title: "Moderate compatibility",
-            description: "There are relevant skills, but some gaps remain."
+            title: "Some keyword overlap",
+            description: "Your resume contains some recognized job-description terms."
         };
     }
 
     return {
-        title: "Compatibility needs improvement",
-        description: "Your resume may need more relevant skills and experience."
+        title: "Low keyword overlap",
+        description: "Few recognized job-description terms were found in your resume."
     };
 }
 
@@ -128,3 +128,7 @@ function renderReport() {
 }
 
 renderReport();
+
+document.getElementById("printReport").addEventListener("click", () => {
+    window.print();
+});
